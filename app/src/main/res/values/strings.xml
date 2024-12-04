@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Medicine reminder</string>
+    <string name="app_title">Reminder</string>
+    <string name="permission_warning">You will not receive reminders without permission to send notifications</string>
+    <string name="form_title">Create a reminder</string>
+    <string name="form_text_hint">Enter a reminder</string>
+    <string name="form_date_hint">Select a date</string>
+    <string name="form_time_hint">Choose a time</string>
+    <string name="form_create">Create</string>
+    <string name="toast_datetime_error">Select date or choose time!</string>
+    <string name="toast_text_error">Enter a reminder!</string>
+    <string name="toast_reminder_created">A reminder has been created!</string>
+    <string name="toast_reminder_removed">A reminder has been removed!</string>
+    <string name="new_reminder">New reminder!</string>
+</resources>

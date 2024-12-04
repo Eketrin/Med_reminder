@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="white_yello">#E4DFD5</color>
+    <color name="green">#8FA663</color>
+    <color name="gr_dark">#31441E</color>
+    <color name="orange">#D9B353</color>
+    <color name="lite_orange">#E6E8B2</color>
+    <color name="grad_1">#C1F299</color>
+    <color name="grad_2">#E7EB59</color>
+</resources>
