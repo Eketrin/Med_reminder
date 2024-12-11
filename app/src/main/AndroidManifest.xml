@@ -28,6 +28,8 @@
             </intent-filter>
         </activity>
         <receiver android:name=".ReminderBroadcastReceiver"/>
+        <receiver android:name=".DismissNotificationReceiver" />
+
     </application>
 
 </manifest>
