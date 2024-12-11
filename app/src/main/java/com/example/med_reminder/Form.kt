@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -41,9 +42,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlin.math.round
-/*
-*   тут описание плашки для создания напоминания
-*/
+
+//  тут описание плашки для создания нового напоминания
+
 @Preview
 @Composable // основной
 fun Form(viewModel: RemindersViewModel = viewModel()) {
@@ -54,7 +55,10 @@ fun Form(viewModel: RemindersViewModel = viewModel()) {
     Column(
         modifier = Modifier
             .padding(10.dp) // Задаем отступы вокруг колонки
-            .background(colorResource(id = R.color.lite_back), RoundedCornerShape(20.dp)) // Задаем фон и скругленные углы
+            .background(
+                colorResource(id = R.color.lite_back),
+                RoundedCornerShape(20.dp)
+            ) // Задаем фон и скругленные углы
             .padding(top = 10.dp), // Дополнительные отступы сверху
         horizontalAlignment = Alignment.CenterHorizontally // Выравнивание содержимого по центру по горизонтали
     ) {
@@ -74,7 +78,7 @@ fun Form(viewModel: RemindersViewModel = viewModel()) {
         DateTimeInputFields(viewModel)
         // Кнопка для создания напоминания
         CreateButton {
-            viewModel.addReminder(context) // Добавляем напоминание через ViewModel
+            viewModel.addReminder(context) // передали функцию для создания напоминания
         }
     }
 }
@@ -85,16 +89,25 @@ fun ReminderTextField(viewModel: RemindersViewModel) {
     TextField(
         value = viewModel.text,
         onValueChange = { viewModel.text = it }, // Обновление значения при изменении
-        label = { Text(text = stringResource(id = R.string.form_text_hint)) }, // Метка для текстового поля
+        label = { Text(text = stringResource(id = R.string.form_text_hint))
+//            if (viewModel.text.isEmpty()) {
+//                 // Показываем подсказку, если поле пустое
+//            }
+        },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent, // Прозрачный фон
+            unfocusedTextColor = colorResource(id = R.color.gr_dark),
+            focusedTextColor = colorResource(id = R.color.gr_dark),
             cursorColor = colorResource(id = R.color.gr_dark), // Цвет курсора
+            focusedPlaceholderColor = colorResource(id = R.color.gr_dark),
+            unfocusedPlaceholderColor = colorResource(id = R.color.gr_dark),
             focusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при фокусе
             unfocusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при отсутствии фокуса
             focusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при фокусе
             unfocusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при отсутствии фокуса
             disabledIndicatorColor = Color.Transparent // Прозрачная линия индикатора, если поле отключено
         ),
+
         singleLine = true, // Однострочное поле ввода
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // Настройки клавиатуры
         modifier = Modifier.fillMaxWidth() // Заполнение ширины
@@ -129,7 +142,8 @@ fun DateInputField(viewModel: RemindersViewModel) {
         context,
         { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
             // Обновляем дату в ViewModel при выборе
-            viewModel.date = "${Utils.addZero(selectedDay)}.${Utils.addZero(selectedMonth + 1)}.$selectedYear"
+            viewModel.date =
+                "${Utils.addZero(selectedDay)}.${Utils.addZero(selectedMonth + 1)}.$selectedYear"
         },
         year, month, day // Устанавливаем начальные значения
     )
@@ -142,18 +156,22 @@ fun DateInputField(viewModel: RemindersViewModel) {
                 .fillMaxWidth() // Заполнение ширины
                 .clickable { datePickerDialog.show() }, // Открытие диалога при нажатии
             colors = TextFieldDefaults.textFieldColors(
+                focusedTextColor = Color.Transparent,
+                unfocusedTextColor = Color.Transparent,
                 containerColor = colorResource(id = R.color.lite_orange),  // Цвет фона текстового поля
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
+                //unfocusedIndicatorColor = Color.Transparent,
+                //focusedIndicatorColor = Color.Transparent
             ),
             enabled = false,  // Отключаем редактирование поля
+            label = { Text(text = stringResource(id = R.string.form_date_hint)) }
             //shape = RoundedCornerShape(15.dp)
 
         )
         // Отображение текста даты или подсказки
         Text(
-            text = if(viewModel.date.isNotEmpty()) viewModel.date else
-                stringResource(id = R.string.form_date_hint),
+            text = "",
+//            if (viewModel.date.isNotEmpty()) viewModel.date
+//            else stringResource(id = R.string.form_date_hint),
             color = colorResource(id = R.color.green), // Цвет текста
             modifier = Modifier
                 .align(Alignment.CenterStart) // Выравнивание текста по началу
@@ -190,15 +208,19 @@ fun TimeInputField(viewModel: RemindersViewModel) {
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = colorResource(id = R.color.lite_orange) // Цвет фона текстового поля
             ),
-            enabled = false // Отключаем редактирование поля
+            enabled = false, // Отключаем редактирование поля
+            label = { Text(text = stringResource(id = R.string.form_time_hint)) }
         )
         // Отображение текста времени или подсказки
         Text(
-            text = if(viewModel.time.isNotEmpty()) viewModel.time else stringResource(id = R.string.form_time_hint),
+            text = "",
+            //text = if(viewModel.time.isNotEmpty()) viewModel.time
+            // else stringResource(id = R.string.form_time_hint),
             color = colorResource(id = R.color.green), // Цвет текста
             modifier = Modifier
                 .align(Alignment.CenterStart) // Выравнивание текста по началу
                 .padding(start = 10.dp) // Отступ слева
+
         )
     }
 }

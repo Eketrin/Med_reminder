@@ -35,7 +35,7 @@ class ReminderApplication: Application() {
                 }
             // для управления уведомлениями
             val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            // Создаем канал уведомлений в системе, что позволяет приложению отправлять уведомления пользователю.
+            // Создаем канал уведомлений
             notificationManager.createNotificationChannel(channel)
         }
     }

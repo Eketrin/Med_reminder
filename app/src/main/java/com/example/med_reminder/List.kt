@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+// тут достаём все наши напоминания и выводим их в колонку
+
 @Composable
 fun List(viewModel: RemindersViewModel = viewModel()) {
     val context = LocalContext.current

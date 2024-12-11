@@ -9,6 +9,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
+//тут мы готовим уведомление к отправке и отправляем его
+
 class ReminderBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         // Проверяем, что контекст не равен null, чтобы избежать ошибок
@@ -23,19 +25,19 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
 
             // Создаем уведомление с использованием NotificationCompat.Builder
             val builder = NotificationCompat.Builder(context, ReminderApplication.channelId)
-                .setSmallIcon(R.drawable.ic_notification) // Устанавливаем иконку уведомления
-                .setContentTitle(context.resources.getString(R.string.new_reminder)) // Устанавливаем заголовок уведомления
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(context.resources.getString(R.string.new_reminder)) //заголовок
                 .setContentText(text) // Устанавливаем текст уведомления
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // Устанавливаем высокий приоритет для уведомления
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) // Устанавливаем видимость уведомления
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)) // Устанавливаем звук уведомления
+                .setPriority(NotificationCompat.PRIORITY_HIGH) //приоритет
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) //видимость
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)) //звук
 
-            // Проверяем, есть ли разрешение на отправку уведомлений
+            // Проверка на разрешение на отправку уведомлений
             if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                return // Если разрешение не предоставлено, выходим из метода
+                return // Если нет выходим из метода
             }
 
-            // Отправляем уведомление с заданным идентификатором
+            // Отправляем уведомление
             notificationManager.notify(id!!, builder.build())
         }
     }

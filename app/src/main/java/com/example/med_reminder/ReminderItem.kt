@@ -30,9 +30,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-/*
-*   тут описывается как будет выглядеть каждый элемент в списке элементов
-*/
+//   тут описывается как будет выглядеть каждый элемент в списке элементов
+
 @Composable
 fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel) {
     val context = LocalContext.current

@@ -16,7 +16,8 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-// Класс RemindersViewModel наследуется от ViewModel и управляет логикой напоминаний
+// тут описана логика напоминаний
+
 class RemindersViewModel : ViewModel() {
     // Объект для работы с базой данных
     lateinit var dbHelper: DatabaseHelper
