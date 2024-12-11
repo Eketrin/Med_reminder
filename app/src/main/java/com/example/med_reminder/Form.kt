@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,184 +40,201 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlin.math.round
+/*
+*   тут описание плашки для создания напоминания
+*/
 @Preview
-@Composable
+@Composable // основной
 fun Form(viewModel: RemindersViewModel = viewModel()) {
-    val context = LocalContext.current
+    val context = LocalContext.current // Получаем текущий контекст приложения
 
+
+    // Основной контейнер для вертикального размещения элементов формы
     Column(
         modifier = Modifier
-            .padding(10.dp)
-            .background(colorResource(id = R.color.lite_orange), RoundedCornerShape(15.dp))
-            .border(0.5.dp, colorResource(id = R.color.lite_orange), RoundedCornerShape(15.dp))
-            .padding(top = 10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(10.dp) // Задаем отступы вокруг колонки
+            .background(colorResource(id = R.color.lite_back), RoundedCornerShape(20.dp)) // Задаем фон и скругленные углы
+            .padding(top = 10.dp), // Дополнительные отступы сверху
+        horizontalAlignment = Alignment.CenterHorizontally // Выравнивание содержимого по центру по горизонтали
     ) {
-        Text(text = stringResource(id = R.string.form_title),
+        // Заголовок формы
+        Text(
+            text = stringResource(id = R.string.form_title), // Получаем строку из ресурсов
             style = TextStyle(
-                color = colorResource(id = R.color.white),
+                color = colorResource(id = R.color.gr_dark),
                 fontSize = 20.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily(Font(R.font.montserrat))
             )
         )
 
+        // Поле для ввода текста напоминания
         ReminderTextField(viewModel)
+        // Поля для выбора даты и времени
         DateTimeInputFields(viewModel)
+        // Кнопка для создания напоминания
         CreateButton {
-            viewModel.addReminder(context)
+            viewModel.addReminder(context) // Добавляем напоминание через ViewModel
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
+@Composable // введите лекарство
 fun ReminderTextField(viewModel: RemindersViewModel) {
     TextField(
         value = viewModel.text,
-        onValueChange = { viewModel.text = it },
-        label = { Text(text = stringResource(id = R.string.form_text_hint)) },
+        onValueChange = { viewModel.text = it }, // Обновление значения при изменении
+        label = { Text(text = stringResource(id = R.string.form_text_hint)) }, // Метка для текстового поля
         colors = TextFieldDefaults.textFieldColors(
-            containerColor = Color.Transparent,
-//            textColor = colorResource(id = R.color.green),
-            cursorColor = colorResource(id = R.color.green),
-//            placeholderColor = colorResource(id = R.color.green),
-            focusedLabelColor = colorResource(id = R.color.green),
-            unfocusedLabelColor = colorResource(id = R.color.green),
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
+            containerColor = Color.Transparent, // Прозрачный фон
+            cursorColor = colorResource(id = R.color.gr_dark), // Цвет курсора
+            focusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при фокусе
+            unfocusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при отсутствии фокуса
+            focusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при фокусе
+            unfocusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при отсутствии фокуса
+            disabledIndicatorColor = Color.Transparent // Прозрачная линия индикатора, если поле отключено
         ),
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-        modifier = Modifier.fillMaxWidth()
+        singleLine = true, // Однострочное поле ввода
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // Настройки клавиатуры
+        modifier = Modifier.fillMaxWidth() // Заполнение ширины
     )
-
 }
 
-@Composable
+@Composable // колонка для кнопок
 fun DateTimeInputFields(viewModel: RemindersViewModel) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth() // Заполнение ширины
+            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp), // Задаем отступы
+        verticalArrangement = Arrangement.spacedBy(8.dp), // Расстояние между элементами
+        horizontalAlignment = Alignment.CenterHorizontally // Выравнивание по центру
     ) {
-        DateInputField(viewModel)
-        TimeInputField(viewModel)
+        DateInputField(viewModel) // Поле для ввода даты
+        TimeInputField(viewModel) // Поле для ввода времени
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
+@Composable // выберите дату
 fun DateInputField(viewModel: RemindersViewModel) {
-    val context = LocalContext.current
-    val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val context = LocalContext.current // Получаем текущий контекст приложения
+    val calendar = Calendar.getInstance() // Создаем объект календаря
+    val year = calendar.get(Calendar.YEAR) // Получаем текущий год
+    val month = calendar.get(Calendar.MONTH) // Получаем текущий месяц
+    val day = calendar.get(Calendar.DAY_OF_MONTH) // Получаем текущий день
+
+    // Создаем диалог выбора даты
     val datePickerDialog = DatePickerDialog(
         context,
-        {
-                _: DatePicker,
-                selectedYear: Int,
-                selectedMonth: Int,
-                selectedDay: Int -> viewModel.date = "${Utils.addZero(selectedDay)}.${Utils.addZero(selectedMonth + 1)}.$selectedYear"},
-        year, month, day
+        { _: DatePicker, selectedYear: Int, selectedMonth: Int, selectedDay: Int ->
+            // Обновляем дату в ViewModel при выборе
+            viewModel.date = "${Utils.addZero(selectedDay)}.${Utils.addZero(selectedMonth + 1)}.$selectedYear"
+        },
+        year, month, day // Устанавливаем начальные значения
     )
 
-    Box {
+    Box { // Контейнер для наложения элементов
         TextField(
-            value = viewModel.date,
-            onValueChange = { viewModel.date = it },
+            value = viewModel.date, // Текущее значение поля даты
+            onValueChange = { viewModel.date = it }, // Обновление значения при изменении
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable { datePickerDialog.show() },
+                .fillMaxWidth() // Заполнение ширины
+                .clickable { datePickerDialog.show() }, // Открытие диалога при нажатии
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = colorResource(id = R.color.orange)
+                containerColor = colorResource(id = R.color.lite_orange),  // Цвет фона текстового поля
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent
             ),
-            enabled = false
+            enabled = false,  // Отключаем редактирование поля
+            //shape = RoundedCornerShape(15.dp)
+
         )
+        // Отображение текста даты или подсказки
         Text(
-            text = if(viewModel.date.isNotEmpty()) viewModel.date else stringResource(id = R.string.form_date_hint),
-            color = colorResource(id = R.color.green),
+            text = if(viewModel.date.isNotEmpty()) viewModel.date else
+                stringResource(id = R.string.form_date_hint),
+            color = colorResource(id = R.color.green), // Цвет текста
             modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 10.dp)
+                .align(Alignment.CenterStart) // Выравнивание текста по началу
+                .padding(start = 10.dp) // Отступ слева
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
+@Composable // выберите время
 fun TimeInputField(viewModel: RemindersViewModel) {
-    val context = LocalContext.current
-    val calendar = Calendar.getInstance()
-    val hour = calendar.get(Calendar.HOUR_OF_DAY)
-    val minute = calendar.get(Calendar.MINUTE)
+    val context = LocalContext.current // Получаем текущий контекст приложения
+    val calendar = Calendar.getInstance() // Создаем объект календаря
+    val hour = calendar.get(Calendar.HOUR_OF_DAY) // Получаем текущий час
+    val minute = calendar.get(Calendar.MINUTE) // Получаем текущую минуту
+
+    // Создаем диалог выбора времени
     val timePickerDialog = TimePickerDialog(
         context,
-        {
-                _: TimePicker,
-                selectedHour: Int,
-                selectedMinute: Int -> viewModel.time = "${Utils.addZero(selectedHour)}:${Utils.addZero(selectedMinute)}"},
-        hour, minute, true
+        { _: TimePicker, selectedHour: Int, selectedMinute: Int ->
+            // Обновляем время в ViewModel при выборе
+            viewModel.time = "${Utils.addZero(selectedHour)}:${Utils.addZero(selectedMinute)}"
+        },
+        hour, minute, true // Устанавливаем начальные значения
     )
 
-    Box {
+    Box { // Контейнер для наложения элементов
         TextField(
-            value = viewModel.time,
-            onValueChange = { viewModel.time = it },
+            value = viewModel.time, // Текущее значение поля времени
+            onValueChange = { viewModel.time = it }, // Обновление значения при изменении
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable { timePickerDialog.show() },
+                .fillMaxWidth() // Заполнение ширины
+                .clickable { timePickerDialog.show() }, // Открытие диалога при нажатии
             colors = TextFieldDefaults.textFieldColors(
-                containerColor = colorResource(id = R.color.orange)
+                containerColor = colorResource(id = R.color.lite_orange) // Цвет фона текстового поля
             ),
-            enabled = false
+            enabled = false // Отключаем редактирование поля
         )
+        // Отображение текста времени или подсказки
         Text(
             text = if(viewModel.time.isNotEmpty()) viewModel.time else stringResource(id = R.string.form_time_hint),
-            color = colorResource(id = R.color.green),
+            color = colorResource(id = R.color.green), // Цвет текста
             modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 10.dp)
+                .align(Alignment.CenterStart) // Выравнивание текста по началу
+                .padding(start = 10.dp) // Отступ слева
         )
     }
 }
-
 
 @Composable
 fun CreateButton(onClick: () -> Unit) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+    val keyboardController = LocalSoftwareKeyboardController.current // Получаем контроллер клавиатуры
 
     Button(
         onClick = {
-            onClick()
-            keyboardController?.hide()
+            onClick() // Вызываем переданную функцию при нажатии
+            keyboardController?.hide() // Скрываем клавиатуру
         },
         modifier = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth()
+            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp) // Задаем отступы
+            .fillMaxWidth() // Заполнение ширины
             .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        colorResource(id = R.color.grad_1),
-                        colorResource(id = R.color.grad_2)
-                    )
-                ),
-                shape = RoundedCornerShape(15.dp)
+                colorResource(id = R.color.grad_1),
+//                brush = Brush.horizontalGradient( // Задаем градиентный фон
+//                    colors = listOf(
+//                        colorResource(id = R.color.grad_1), // Первый цвет градиента
+//                        colorResource(id = R.color.grad_2) // Второй цвет градиента
+//                    )),
+                shape = RoundedCornerShape(15.dp) // Скругленные углы кнопки
             ),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent
-            )
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent // Прозрачный цвет фона кнопки
         )
+    )
     {
+        // Текст на кнопке
         Text(
-            stringResource(id = R.string.form_create),
+            stringResource(id = R.string.form_create), // Получаем строку из ресурсов
             style = TextStyle(
-                color = Color.White,
-                fontWeight = FontWeight.Bold
+                color = Color.White, // Цвет текста
+                fontWeight = FontWeight.Bold // Жирный шрифт
             )
         )
     }

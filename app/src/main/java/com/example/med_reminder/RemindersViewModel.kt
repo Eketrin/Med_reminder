@@ -16,30 +16,38 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class RemindersViewModel: ViewModel() {
+// Класс RemindersViewModel наследуется от ViewModel и управляет логикой напоминаний
+class RemindersViewModel : ViewModel() {
+    // Объект для работы с базой данных
     lateinit var dbHelper: DatabaseHelper
+    // Объект для управления будильниками
     lateinit var alarmManager: AlarmManager
 
-    var text by mutableStateOf("")
-    var date by mutableStateOf("")
-    var time by mutableStateOf("")
+    // Состояния для текста, даты и времени напоминания
+    var text by mutableStateOf("") // Текст напоминания
+    var date by mutableStateOf("") // Дата напоминания
+    var time by mutableStateOf("") // Время напоминания
 
+    // Список напоминаний, который будет изменяемым состоянием
     var reminders = mutableStateListOf<Reminder>()
-        private set
+        private set // Ограничиваем доступ к изменению списка извне
 
     fun addReminder(context: Context) {
-        if(date.isEmpty() && time.isEmpty()) {
+        // Проверяем, заполнены ли дата и время
+        if (date.isEmpty() && time.isEmpty()) {
             return Toast.makeText(context, R.string.toast_datetime_error, Toast.LENGTH_LONG).show()
-        } else if(text.isEmpty()) {
+        } else if (text.isEmpty()) {
             return Toast.makeText(context, R.string.toast_text_error, Toast.LENGTH_LONG).show()
         }
 
-        if(date.isEmpty()) date = Utils.getCurrentDate()
-        if(time.isEmpty()) time = "12:00"
+        if (date.isEmpty()) date = Utils.getCurrentDate()
+        if (time.isEmpty()) time = "12:00"
 
+        // Создаем новое напоминание
         val reminder = Reminder(Utils.getID(), text, date, time)
-        reminders.add(reminder)
+        reminders.add(reminder) // Добавляем его в список напоминаний
 
+        // Сохраняем напоминание в базе данных
         dbHelper.writableDatabase?.insert(DatabaseHelper.TABLE_NAME, null, ContentValues().apply {
             put(DatabaseHelper.COLUMN_ID, reminder.id)
             put(DatabaseHelper.COLUMN_TEXT, reminder.text)
@@ -47,58 +55,75 @@ class RemindersViewModel: ViewModel() {
             put(DatabaseHelper.COLUMN_TIME, reminder.time)
         })
 
+        // Очищаем поля ввода после добавления напоминания
         text = ""
         date = ""
         time = ""
 
+        // Планируем уведомление для напоминания
         scheduleNotification(context, reminder.date, reminder.time, reminder.text, reminder.id)
+        // Сортируем список напоминаний
         sortReminders()
+        // Показываем сообщение о том, что напоминание было создано
         Toast.makeText(context, R.string.toast_reminder_created, Toast.LENGTH_LONG).show()
     }
 
+    // Функция для удаления напоминания
     fun removeReminder(reminder: Reminder, context: Context) {
-        reminders.remove(reminder)
+        reminders.remove(reminder) // Удаляем напоминание из списка
+        // Удаляем напоминание из базы данных
         dbHelper.writableDatabase?.delete(DatabaseHelper.TABLE_NAME, "${DatabaseHelper.COLUMN_ID}=?", arrayOf(reminder.id.toString()))
+        // Отменяем запланированное уведомление
         alarmManager.cancel(Utils.getPendingIntent(context, reminder.id, reminder.text))
+        // Показываем сообщение о том, что напоминание было удалено
         Toast.makeText(context, R.string.toast_reminder_removed, Toast.LENGTH_LONG).show()
     }
 
+    // Функция для получения всех напоминаний из базы данных
     fun getReminders(context: Context) {
-        reminders.clear()
+        reminders.clear() // Очищаем текущий список напоминаний
+        // Запрашиваем данные из базы данных
         val cursor = dbHelper.readableDatabase?.query(DatabaseHelper.TABLE_NAME, null, null, null, null, null, null)
-        if(cursor?.moveToFirst() == true) {
+        // Проверяем, есть ли данные в курсоре
+        if (cursor?.moveToFirst() == true) {
             do {
+                // Извлекаем данные напоминания из курсора
                 val id = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_ID))
                 val text = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TEXT))
                 val date = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DATE))
                 val time = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TIME))
 
+                // Создаем объект напоминания
                 val reminder = Reminder(id, text, date, time)
-                if(Utils.isReminderInPast(date, time)) {
-                    removeReminder(reminder, context)
+                // Проверяем, не истекло ли время напоминания
+                if (Utils.isReminderInPast(date, time)) {
+                    removeReminder(reminder, context) // Удаляем напоминание, если оно истекло
                 } else {
-                    reminders.add(reminder)
+                    reminders.add(reminder) // Добавляем напоминание в список
                 }
-            } while(cursor.moveToNext())
+            } while (cursor.moveToNext()) // Переходим к следующему элементу в курсоре
         }
-        cursor?.close()
-        sortReminders()
+        cursor?.close() // Закрываем курсор
+        sortReminders() // Сортируем список напоминаний
     }
 
+    // Функция для сортировки напоминаний по дате и времени
     fun sortReminders() {
-        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm") // Формат даты и времени
         reminders.sortWith(compareBy { reminder ->
-            LocalDateTime.parse("${reminder.date} ${reminder.time}", formatter)
+            LocalDateTime.parse("${reminder.date} ${reminder.time}", formatter) // Сортируем напоминания
         })
     }
 
+    // Функция для планирования уведомления
     fun scheduleNotification(context: Context, date: String, time: String, text: String, id: Int) {
-        val dateTime = "$date $time"
-        val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault())
-        val triggerRime = sdf.parse(dateTime)?.time ?: return
-        val pendingIntent = Utils.getPendingIntent(context, id, text)
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerRime, pendingIntent)
+        val dateTime = "$date $time" // Объединяем дату и время
+        val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()) // Формат даты и времени
+        val triggerTime = sdf.parse(dateTime)?.time ?: return // Получаем время срабатывания уведомления
+        val pendingIntent = Utils.getPendingIntent(context, id, text) // Получаем PendingIntent для уведомления
+        // Проверяем версию Android и возможность планирования точных будильников
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent) // Планируем уведомление
         }
     }
 }

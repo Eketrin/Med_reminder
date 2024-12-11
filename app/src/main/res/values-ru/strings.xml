@@ -1,16 +1,16 @@
 
 <resources>
     <string name="app_name">Medicine reminder</string>
-    <string name="app_title">Reminder</string>
+    <string name="app_title">Med reminder</string>
     <string name="permission_warning">Без разрешения на отправку уведомлений вы не сможете получать напоминания</string>
     <string name="form_title">Создать напоминание</string>
-    <string name="form_text_hint">Введите напоминание</string>
+    <string name="form_text_hint">Введите название лекарства</string>
     <string name="form_date_hint">Выберите дату</string>
     <string name="form_time_hint">Выберите время</string>
     <string name="form_create">Создать</string>
     <string name="toast_datetime_error">Выберите дату или время!</string>
-    <string name="toast_text_error">Введите текст напоминания!</string>
+    <string name="toast_text_error">Введите название лекарства!</string>
     <string name="toast_reminder_created">Напоминание создано!</string>
     <string name="toast_reminder_removed">Напоминание удалено!</string>
-    <string name="new_reminder">Новое напоминание!</string>
+    <string name="new_reminder">Вам нужно принять лекарство!</string>
 </resources>

@@ -12,12 +12,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -26,10 +30,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-
+/*
+*   тут описывается как будет выглядеть каждый элемент в списке элементов
+*/
 @Composable
 fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel) {
     val context = LocalContext.current
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(10.dp),
+//        shape = RoundedCornerShape(15.dp),
+//        elevation = 5.dp
+//    ) {}
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -74,6 +87,7 @@ fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel) {
                 modifier = Modifier
                     .fillMaxHeight()
                     .padding(start = 7.dp)
+                    .clip(CircleShape)
                     .clickable {
                         viewModel.removeReminder(reminder, context)
                     }

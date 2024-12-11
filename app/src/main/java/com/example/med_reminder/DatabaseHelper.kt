@@ -4,7 +4,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
+    null, DATABASE_VERSION) {
     companion object {
         private const val DATABASE_NAME = "reminders.db"
         private const val DATABASE_VERSION = 1
@@ -16,7 +17,8 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DATABASE_NAME,
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_TEXT TEXT, $COLUMN_DATE TEXT, $COLUMN_TIME TEXT)"
+        val createTableQuery = "CREATE TABLE $TABLE_NAME($COLUMN_ID INTEGER PRIMARY KEY, " +
+                "$COLUMN_TEXT TEXT, $COLUMN_DATE TEXT, $COLUMN_TIME TEXT)"
         db?.execSQL(createTableQuery)
     }
 

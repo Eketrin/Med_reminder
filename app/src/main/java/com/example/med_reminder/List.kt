@@ -20,8 +20,9 @@ fun List(viewModel: RemindersViewModel = viewModel()) {
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
-        itemsIndexed(viewModel.reminders) {
-            _, reminder -> ReminderItem(reminder, viewModel)
+        itemsIndexed(viewModel.reminders) { //список
+                _, reminder ->
+            ReminderItem(reminder, viewModel)
         }
     }
 }

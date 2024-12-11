@@ -50,15 +50,15 @@ android {
 }
 
 dependencies {
-    implementation(libs.threetenabp)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.androidx.lifecycle.viewmodel.compose.android)
-    implementation(libs.androidx.runtime.livedata)
+//    implementation(libs.threetenabp)
+//    implementation(libs.accompanist.systemuicontroller)
+//    implementation(libs.androidx.lifecycle.viewmodel.compose.android)
+//    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.ui.text.google.fonts)
-//    implementation("com.jakewharton.threetenabp:threetenabp:1.3.1")
-//    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
-//    implementation("androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.2")
-//    implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
+    implementation("com.jakewharton.threetenabp:threetenabp:1.3.1")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.2")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
