@@ -187,16 +187,19 @@ fun CreateButton(onClick: () -> Unit) {
 
 
 //******************
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable // введите дозировку
+@OptIn(ExperimentalMaterial3Api::class)@Composable // введите дозировку
 fun DoseTextField(viewModel: RemindersViewModel, modifier: Modifier = Modifier) {
     TextField(
-
         modifier = modifier,
         value = viewModel.dose,
-        textStyle = TextStyle(fontSize=20.sp),
-        onValueChange = {
-            viewModel.dose = it.filter { char -> char.isDigit() || char == ',' }
+        textStyle = TextStyle(fontSize = 20.sp),
+        onValueChange = { newText ->
+            val commaCount = newText.count { it == ',' }
+            if (commaCount > 1) {
+                viewModel.dose = newText.dropLast(1)
+            } else {
+                viewModel.dose = newText.filter { char -> char.isDigit() || char == ',' }
+            }
         },
         label = {
             Text(
@@ -215,12 +218,12 @@ fun DoseTextField(viewModel: RemindersViewModel, modifier: Modifier = Modifier) 
             unfocusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при отсутствии фокуса
             disabledIndicatorColor = Color.Transparent // Прозрачная линия индикатора, если поле отключено
         ),
-
         singleLine = true, // Однострочное поле ввода
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // Настройки клавиатуры
         //modifier = Modifier.fillMaxWidth() // Заполнение ширины
     )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable // введите единицу измерения
