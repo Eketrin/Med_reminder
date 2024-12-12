@@ -7,6 +7,7 @@
     <string name="form_text_hint">Введите название лекарства</string>
     <string name="form_date_hint">Выберите дату</string>
     <string name="form_dose_hint">Укажите дозу</string>
+    <string name="list_dose">Дозировка</string>
     <string name="form_unit_hint">Укажите единицы</string>
     <string name="form_time_hint">Выберите время</string>
     <string name="form_create">Создать</string>

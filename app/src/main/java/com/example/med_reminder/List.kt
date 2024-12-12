@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -51,6 +52,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -99,72 +101,74 @@ fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel) {
         backgroundColor = colorResource(id = R.color.dark_green_list) // не сегодня
         textPillColor = colorResource(id = R.color.lite_green_list)
     }
-
-    Row( modifier = Modifier
-        .fillMaxWidth()
-        .height(70.dp)
-        .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-        .background(backgroundColor, RoundedCornerShape(25.dp))
-        .padding(start = 10.dp, end = 5.dp, top = 5.dp, bottom = 5.dp)
-        .pointerInput(Unit) {
-            detectTapGestures(
-                onLongPress = {
-                    // Выводим сообщение с вопросом перед удалением напоминания
-                    val alertDialog = AlertDialog.Builder(context)
-                        .setTitle("Удаление напоминания")
-                        .setMessage("Вы точно хотите удалить ${reminder.text}?")
-                        .setPositiveButton("Да") { _, _ ->
-                            // Удаление напоминания при подтверждении
-                            viewModel.removeReminder(reminder, context)
-                        }
-                        .setNegativeButton("Нет", null)
-                        .create()
-                    alertDialog.show()
-                }
-            )
-        },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.50f)
-                .padding(start = 10.dp)
-        ) {
-            Text(
-                text = reminder.text,
-                style = TextStyle(color = Color.White, fontSize = 18.sp),
-                modifier = Modifier.fillMaxWidth(1f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "${reminder.dose} ${reminder.piece}",
-                style = TextStyle(color = textPillColor, fontSize = 16.sp),
-                modifier = Modifier.padding(end = 7.dp)
-            )
-        }
+    Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+            .background(backgroundColor, RoundedCornerShape(25.dp))
+            .padding(start = 10.dp, end = 5.dp, top = 5.dp, bottom = 5.dp),
+         contentAlignment = Alignment.Center) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Text(
-                text = reminder.date,
-                style = TextStyle(color = textPillColor, fontSize = 16.sp),
-                modifier = Modifier.padding(start = 7.dp)
-            )
-            Text(
-                text = reminder.time,
-                style = TextStyle(color = textPillColor, fontSize = 16.sp),
-                modifier = Modifier.padding(start = 7.dp)
-            )
-            Checkbox(
-                checked = reminder.taked,
-                onCheckedChange = { isChecked ->
-                    viewModel.updateReminderTaked(reminder.copy(taked = isChecked), context)
-                },
-                colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.green))
-            )
+            modifier = Modifier
+                .wrapContentSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            // Выводим сообщение с вопросом перед удалением напоминания
+                            val alertDialog = AlertDialog.Builder(context)
+                                .setTitle("Удаление напоминания")
+                                .setMessage("Вы точно хотите удалить ${reminder.text}?")
+                                .setPositiveButton("Да") { _, _ ->
+                                    // Удаление напоминания при подтверждении
+                                    viewModel.removeReminder(reminder, context)
+                                }
+                                .setNegativeButton("Нет", null)
+                                .create()
+                            alertDialog.show()
+                        }
+                    )
+                }
+        )
+            {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth(0.50f)
+                        .padding(start = 10.dp)
+                ) {
+                    Text(
+                        text = reminder.text,
+                        style = TextStyle(color = Color.White, fontSize = 18.sp),
+                        modifier = Modifier.fillMaxWidth(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = "${stringResource(id = R.string.list_dose)}: ${reminder.dose} ${reminder.piece}",
+                        style = TextStyle(color = textPillColor, fontSize = 16.sp),
+                        modifier = Modifier.padding(end = 7.dp)
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(
+                        text = reminder.date,
+                        style = TextStyle(color = textPillColor, fontSize = 16.sp),
+                        modifier = Modifier.padding(start = 7.dp)
+                    )
+                    Text(
+                        text = reminder.time,
+                        style = TextStyle(color = textPillColor, fontSize = 16.sp),
+                        modifier = Modifier.padding(start = 7.dp)
+                    )
+                    Checkbox(
+                        checked = reminder.taked,
+                        onCheckedChange = { isChecked ->
+                            viewModel.updateReminderTaked(reminder.copy(taked = isChecked), context)
+                        },
+                        colors = CheckboxDefaults.colors(checkedColor = colorResource(id = R.color.green))
+                    )
+                }
+            }
         }
     }
-}
-
