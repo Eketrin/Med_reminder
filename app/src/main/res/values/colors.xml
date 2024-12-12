@@ -11,4 +11,6 @@
     <color name="grad_1">#A1B15B</color>
     <color name="grad_2">#E7EB59</color>
     <color name="dark_red">#42291F</color>
+    <color name="lite_green_list">#D5D4B4</color>
+    <color name="dark_green_list">#969F65</color>
 </resources>

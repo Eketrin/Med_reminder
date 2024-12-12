@@ -12,6 +12,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -74,8 +76,13 @@ fun Form(viewModel: RemindersViewModel = viewModel()) {
 
         // Поле для ввода текста напоминания
         ReminderTextField(viewModel)
+        // Поле для ввода дозировки
+        DoseTextField(viewModel)
+        // Поле для выбора единиц измерения
+        UnitTextField(viewModel)
         // Поля для выбора даты и времени
         DateTimeInputFields(viewModel)
+
         // Кнопка для создания напоминания
         CreateButton {
             viewModel.addReminder(context) // передали функцию для создания напоминания
@@ -93,6 +100,62 @@ fun ReminderTextField(viewModel: RemindersViewModel) {
 //            if (viewModel.text.isEmpty()) {
 //                 // Показываем подсказку, если поле пустое
 //            }
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.Transparent, // Прозрачный фон
+            unfocusedTextColor = colorResource(id = R.color.gr_dark),
+            focusedTextColor = colorResource(id = R.color.gr_dark),
+            cursorColor = colorResource(id = R.color.gr_dark), // Цвет курсора
+            focusedPlaceholderColor = colorResource(id = R.color.gr_dark),
+            unfocusedPlaceholderColor = colorResource(id = R.color.gr_dark),
+            focusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при фокусе
+            unfocusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при отсутствии фокуса
+            focusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при фокусе
+            unfocusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при отсутствии фокуса
+            disabledIndicatorColor = Color.Transparent // Прозрачная линия индикатора, если поле отключено
+        ),
+
+        singleLine = true, // Однострочное поле ввода
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // Настройки клавиатуры
+        modifier = Modifier.fillMaxWidth() // Заполнение ширины
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable // введите дозировку
+fun DoseTextField(viewModel: RemindersViewModel) {
+    TextField(
+        value = viewModel.dose,
+        onValueChange = { viewModel.dose = it }, // Обновление значения при изменении
+        label = { Text(text = stringResource(id = R.string.form_dose_hint))
+        },
+        colors = TextFieldDefaults.textFieldColors(
+            containerColor = Color.Transparent, // Прозрачный фон
+            unfocusedTextColor = colorResource(id = R.color.gr_dark),
+            focusedTextColor = colorResource(id = R.color.gr_dark),
+            cursorColor = colorResource(id = R.color.gr_dark), // Цвет курсора
+            focusedPlaceholderColor = colorResource(id = R.color.gr_dark),
+            unfocusedPlaceholderColor = colorResource(id = R.color.gr_dark),
+            focusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при фокусе
+            unfocusedLabelColor = colorResource(id = R.color.gr_dark), // Цвет метки при отсутствии фокуса
+            focusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при фокусе
+            unfocusedIndicatorColor = Color.Transparent, // Прозрачная линия индикатора при отсутствии фокуса
+            disabledIndicatorColor = Color.Transparent // Прозрачная линия индикатора, если поле отключено
+        ),
+
+        singleLine = true, // Однострочное поле ввода
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // Настройки клавиатуры
+        modifier = Modifier.fillMaxWidth() // Заполнение ширины
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable // введите единицу измерения
+fun UnitTextField(viewModel: RemindersViewModel) {
+    TextField(
+        value = viewModel.piece,
+        onValueChange = { viewModel.piece = it }, // Обновление значения при изменении
+        label = { Text(text = stringResource(id = R.string.form_unit_hint))
         },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent, // Прозрачный фон

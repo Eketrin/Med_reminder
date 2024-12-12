@@ -28,6 +28,9 @@ class RemindersViewModel : ViewModel() {
     var text by mutableStateOf("") // Текст напоминания
     var date by mutableStateOf("") // Дата напоминания
     var time by mutableStateOf("") // Время напоминания
+    var taked by mutableStateOf(false) // Статус выпито/не выпито
+    var dose by mutableStateOf("") // Доза
+    var piece by mutableStateOf("") // Единица измерения
 
     // Список напоминаний, который будет изменяемым состоянием
     var reminders = mutableStateListOf<Reminder>()
@@ -45,7 +48,7 @@ class RemindersViewModel : ViewModel() {
         if (time.isEmpty()) time = "12:00"
 
         // Создаем новое напоминание
-        val reminder = Reminder(Utils.getID(), text, date, time)
+        val reminder = Reminder(Utils.getID(), text, date, time, taked, dose, piece)
         reminders.add(reminder) // Добавляем его в список напоминаний
 
         // Сохраняем напоминание в базе данных
@@ -54,12 +57,18 @@ class RemindersViewModel : ViewModel() {
             put(DatabaseHelper.COLUMN_TEXT, reminder.text)
             put(DatabaseHelper.COLUMN_DATE, reminder.date)
             put(DatabaseHelper.COLUMN_TIME, reminder.time)
+            put(DatabaseHelper.COLUMN_TAKED, reminder.taked)
+            put(DatabaseHelper.COLUMN_DOSE, reminder.dose)
+            put(DatabaseHelper.COLUMN_PIECE, reminder.piece)
         })
 
         // Очищаем поля ввода после добавления напоминания
         text = ""
         date = ""
         time = ""
+        taked = false
+        dose = ""
+        piece = ""
 
         // Планируем уведомление для напоминания
         scheduleNotification(context, reminder.date, reminder.time, reminder.text, reminder.id)
@@ -93,9 +102,12 @@ class RemindersViewModel : ViewModel() {
                 val text = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TEXT))
                 val date = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DATE))
                 val time = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TIME))
+                val taked = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_TAKED)) == 1 // Преобразуем в Boolean
+                val dose = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DOSE))
+                val piece = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_PIECE))
 
                 // Создаем объект напоминания
-                val reminder = Reminder(id, text, date, time)
+                val reminder = Reminder(id, text, date, time, taked, dose, piece)
                 // Проверяем, не истекло ли время напоминания
                 if (Utils.isReminderInPast(date, time)) {
                     removeReminder(reminder, context) // Удаляем напоминание, если оно истекло
@@ -127,4 +139,30 @@ class RemindersViewModel : ViewModel() {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent) // Планируем уведомление
         }
     }
+
+    fun updateReminderTaked(reminder: Reminder, context: Context) {
+        // Обновляем статус напоминания в списке
+        val index = reminders.indexOfFirst { it.id == reminder.id }
+        if (index != -1) {
+            reminders[index] = reminder // Обновляем список
+        }
+
+        // Обновляем статус в базе данных
+        dbHelper.writableDatabase?.update(DatabaseHelper.TABLE_NAME, ContentValues().apply {
+            put(DatabaseHelper.COLUMN_TAKED, reminder.taked)
+        }, "${DatabaseHelper.COLUMN_ID}=?", arrayOf(reminder.id.toString()))
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

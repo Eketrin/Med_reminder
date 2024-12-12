@@ -59,6 +59,10 @@ dependencies {
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.28.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose-android:2.8.2")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
+
+    implementation("androidx.compose.material:material:1.6.8") // Добавьте эту строку для Material
+    implementation("androidx.compose.material:material-icons-core:1.6.8") // Для иконок
+    implementation("androidx.compose.material:material-icons-extended:1.6.8") // Для расширенных иконок
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

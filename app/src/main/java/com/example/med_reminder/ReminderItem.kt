@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 
 //   тут описывается как будет выглядеть каждый элемент в списке элементов
 
+/*
 @Composable
 fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel) {
     val context = LocalContext.current
@@ -85,12 +86,6 @@ fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel) {
             )
 
 
-//            Checkbox(
-//                checked = isChecked,
-//                onCheckedChange = { isChecked = it }, // Обработка изменения состояния чекбокса
-//                modifier = Modifier.padding(start = 7.dp)
-//            )
-
             Image(
                 painter = painterResource(id = R.drawable.delete),
                 contentDescription = "Delete",
@@ -105,4 +100,4 @@ fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel) {
         }
 
     }
-}
+}*/
