@@ -32,6 +32,7 @@ class RemindersViewModel : ViewModel() {
     var dose by mutableStateOf("") // Доза
     var piece by mutableStateOf("") // Единица измерения
 
+
     // Список напоминаний, который будет изменяемым состоянием
     var reminders = mutableStateListOf<Reminder>()
         private set // Ограничиваем доступ к изменению списка извне
@@ -85,9 +86,12 @@ class RemindersViewModel : ViewModel() {
         dbHelper.writableDatabase?.delete(DatabaseHelper.TABLE_NAME, "${DatabaseHelper.COLUMN_ID}=?", arrayOf(reminder.id.toString()))
         // Отменяем запланированное уведомление
         alarmManager.cancel(Utils.getPendingIntent(context, reminder.id, reminder.text))
+
+        sortReminders() // Сортируем список после удаления
         // Показываем сообщение о том, что напоминание было удалено
         Toast.makeText(context, R.string.toast_reminder_removed, Toast.LENGTH_LONG).show()
     }
+
 
     // Функция для получения всех напоминаний из базы данных
     fun getReminders(context: Context) {
