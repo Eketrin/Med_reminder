@@ -21,6 +21,7 @@ import java.util.Locale
 class RemindersViewModel : ViewModel() {
     // Объект для работы с базой данных
     lateinit var dbHelper: DatabaseHelper
+
     // Объект для управления будильниками
     lateinit var alarmManager: AlarmManager
 
@@ -83,7 +84,11 @@ class RemindersViewModel : ViewModel() {
     fun removeReminder(reminder: Reminder, context: Context) {
         reminders.remove(reminder) // Удаляем напоминание из списка
         // Удаляем напоминание из базы данных
-        dbHelper.writableDatabase?.delete(DatabaseHelper.TABLE_NAME, "${DatabaseHelper.COLUMN_ID}=?", arrayOf(reminder.id.toString()))
+        dbHelper.writableDatabase?.delete(
+            DatabaseHelper.TABLE_NAME,
+            "${DatabaseHelper.COLUMN_ID}=?",
+            arrayOf(reminder.id.toString())
+        )
         // Отменяем запланированное уведомление
         alarmManager.cancel(Utils.getPendingIntent(context, reminder.id, reminder.text))
 
@@ -97,7 +102,15 @@ class RemindersViewModel : ViewModel() {
     fun getReminders(context: Context) {
         reminders.clear() // Очищаем текущий список напоминаний
         // Запрашиваем данные из базы данных
-        val cursor = dbHelper.readableDatabase?.query(DatabaseHelper.TABLE_NAME, null, null, null, null, null, null)
+        val cursor = dbHelper.readableDatabase?.query(
+            DatabaseHelper.TABLE_NAME,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        )
         // Проверяем, есть ли данные в курсоре
         if (cursor?.moveToFirst() == true) {
             do {
@@ -106,7 +119,8 @@ class RemindersViewModel : ViewModel() {
                 val text = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TEXT))
                 val date = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DATE))
                 val time = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_TIME))
-                val taked = cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_TAKED)) == 1 // Преобразуем в Boolean
+                val taked =
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.COLUMN_TAKED)) == 1 // Преобразуем в Boolean
                 val dose = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_DOSE))
                 val piece = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_PIECE))
 
@@ -128,7 +142,10 @@ class RemindersViewModel : ViewModel() {
     fun sortReminders() {
         val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm") // Формат даты и времени
         reminders.sortWith(compareBy { reminder ->
-            LocalDateTime.parse("${reminder.date} ${reminder.time}", formatter) // Сортируем напоминания
+            LocalDateTime.parse(
+                "${reminder.date} ${reminder.time}",
+                formatter
+            ) // Сортируем напоминания
         })
     }
 
@@ -136,11 +153,17 @@ class RemindersViewModel : ViewModel() {
     fun scheduleNotification(context: Context, date: String, time: String, text: String, id: Int) {
         val dateTime = "$date $time" // Объединяем дату и время
         val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()) // Формат даты и времени
-        val triggerTime = sdf.parse(dateTime)?.time ?: return // Получаем время срабатывания уведомления
-        val pendingIntent = Utils.getPendingIntent(context, id, text) // Получаем PendingIntent для уведомления
+        val triggerTime =
+            sdf.parse(dateTime)?.time ?: return // Получаем время срабатывания уведомления
+        val pendingIntent =
+            Utils.getPendingIntent(context, id, text) // Получаем PendingIntent для уведомления
         // Проверяем версию Android и возможность планирования точных будильников
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent) // Планируем уведомление
+            alarmManager.setExact(
+                AlarmManager.RTC_WAKEUP,
+                triggerTime,
+                pendingIntent
+            ) // Планируем уведомление
         }
     }
 
@@ -156,17 +179,6 @@ class RemindersViewModel : ViewModel() {
             put(DatabaseHelper.COLUMN_TAKED, reminder.taked)
         }, "${DatabaseHelper.COLUMN_ID}=?", arrayOf(reminder.id.toString()))
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

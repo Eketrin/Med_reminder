@@ -43,10 +43,18 @@ class ReminderBroadcastReceiver : BroadcastReceiver() {
                 .setPriority(NotificationCompat.PRIORITY_HIGH) // Приоритет
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC) // Видимость
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)) // Звук
-                .addAction(R.drawable.ic_read, "Прочитано", dismissPendingIntent) // Кнопка "Прочитано"
+                .addAction(
+                    R.drawable.ic_read,
+                    "Прочитано",
+                    dismissPendingIntent
+                ) // Кнопка "Прочитано"
 
             // Проверка на разрешение на отправку уведомлений
-            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return // Если нет, выходим из метода
             }
 

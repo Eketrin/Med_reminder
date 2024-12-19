@@ -93,9 +93,10 @@ fun Form(viewModel: RemindersViewModel = viewModel()) {
 fun ReminderTextField(viewModel: RemindersViewModel) {
     TextField(
         value = viewModel.text,
-        textStyle = TextStyle(fontSize=20.sp),
+        textStyle = TextStyle(fontSize = 20.sp),
         onValueChange = { viewModel.text = it }, // Обновление значения при изменении
-        label = { Text(text = stringResource(id = R.string.form_text_hint))
+        label = {
+            Text(text = stringResource(id = R.string.form_text_hint))
 //            if (viewModel.text.isEmpty()) {
 //                 // Показываем подсказку, если поле пустое
 //            }
@@ -125,7 +126,7 @@ fun DoseUnitInputFields(viewModel: RemindersViewModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth(), // Заполнение ширины
-            //.padding(bottom = 10.dp, start = 10.dp, end = 10.dp), // Задаем отступы
+        //.padding(bottom = 10.dp, start = 10.dp, end = 10.dp), // Задаем отступы
         horizontalArrangement = Arrangement.spacedBy(5.dp), // Расстояние между элементами
         verticalAlignment = Alignment.CenterVertically // Выравнивание по центру
     ) {
@@ -150,7 +151,8 @@ fun DateTimeInputFields(viewModel: RemindersViewModel) {
 
 @Composable // кнопка создать
 fun CreateButton(onClick: () -> Unit) {
-    val keyboardController = LocalSoftwareKeyboardController.current // Получаем контроллер клавиатуры
+    val keyboardController =
+        LocalSoftwareKeyboardController.current // Получаем контроллер клавиатуры
 
     Button(
         onClick = {
@@ -187,7 +189,8 @@ fun CreateButton(onClick: () -> Unit) {
 
 
 //******************
-@OptIn(ExperimentalMaterial3Api::class)@Composable // введите дозировку
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable // введите дозировку
 fun DoseTextField(viewModel: RemindersViewModel, modifier: Modifier = Modifier) {
     TextField(
         modifier = modifier,
@@ -203,7 +206,8 @@ fun DoseTextField(viewModel: RemindersViewModel, modifier: Modifier = Modifier) 
         },
         label = {
             Text(
-                text = stringResource(id = R.string.form_dose_hint))
+                text = stringResource(id = R.string.form_dose_hint)
+            )
         },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent, // Прозрачный фон
@@ -231,11 +235,12 @@ fun UnitTextField(viewModel: RemindersViewModel, modifier: Modifier = Modifier) 
     TextField(
         modifier = modifier,
         value = viewModel.piece,
-        textStyle = TextStyle(fontSize=20.sp),
+        textStyle = TextStyle(fontSize = 20.sp),
         onValueChange = {
             viewModel.piece = it.filter { char -> !char.isDigit() }
         },
-        label = { Text(text = stringResource(id = R.string.form_unit_hint))
+        label = {
+            Text(text = stringResource(id = R.string.form_unit_hint))
         },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color.Transparent, // Прозрачный фон
@@ -283,7 +288,7 @@ fun DateInputField(viewModel: RemindersViewModel, modifier: Modifier = Modifier)
             value = viewModel.date, // Текущее значение поля даты
             onValueChange = { viewModel.date = it }, // Обновление значения при изменении
             modifier = Modifier
-               // .fillMaxWidth() // Заполнение ширины
+                // .fillMaxWidth() // Заполнение ширины
                 .clickable { datePickerDialog.show() }, // Открытие диалога при нажатии
             colors = TextFieldDefaults.textFieldColors(
                 focusedTextColor = Color.Transparent,
@@ -333,7 +338,7 @@ fun TimeInputField(viewModel: RemindersViewModel, modifier: Modifier = Modifier)
             value = viewModel.time, // Текущее значение поля времени
             onValueChange = { viewModel.time = it }, // Обновление значения при изменении
             modifier = Modifier
-          //      .fillMaxWidth() // Заполнение ширины
+                //      .fillMaxWidth() // Заполнение ширины
                 .clickable { timePickerDialog.show() }, // Открытие диалога при нажатии
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = colorResource(id = R.color.lite_orange) // Цвет фона текстового поля

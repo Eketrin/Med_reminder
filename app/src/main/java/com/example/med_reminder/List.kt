@@ -108,12 +108,14 @@ fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel, onDelete: ()
         textPillColor = colorResource(id = R.color.lite_green_list)
     }
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-        .background(backgroundColor, RoundedCornerShape(25.dp))
-        .padding(start = 10.dp, end = 5.dp, top = 5.dp, bottom = 5.dp),
-        contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+            .background(backgroundColor, RoundedCornerShape(25.dp))
+            .padding(start = 10.dp, end = 5.dp, top = 5.dp, bottom = 5.dp),
+        contentAlignment = Alignment.Center
+    ) {
         Row(
             modifier = Modifier
                 .wrapContentSize()
@@ -121,7 +123,8 @@ fun ReminderItem(reminder: Reminder, viewModel: RemindersViewModel, onDelete: ()
                     detectTapGestures(
                         onLongPress = {
                             // Выводим сообщение с вопросом перед удалением напоминания
-                            val alertDialog = AlertDialog.Builder(context)
+                            val alertDialog = AlertDialog
+                                .Builder(context)
                                 .setTitle("Удаление напоминания")
                                 .setMessage("Вы точно хотите удалить ${reminder.text}?")
                                 .setPositiveButton("Да") { _, _ ->

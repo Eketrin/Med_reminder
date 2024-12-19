@@ -6,7 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper
 
 // тут работаем с БД
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     // Константы для БД и её версии
     companion object {
         private const val DATABASE_NAME = "reminders.db" // Имя базы данных
